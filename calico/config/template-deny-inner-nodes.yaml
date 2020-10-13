@@ -1,0 +1,27 @@
+apiVersion: projectcalico.org/v3
+kind: GlobalNetworkPolicy
+metadata:
+  name: deny-inner-node-udp
+spec:
+  applyOnForward: true
+  ingress:
+  - action: Deny
+    destination:
+      nets: [WORKER_IPS]
+    protocol: UDP
+    source: {}
+  - action: Deny
+    destination:
+      nets: [WORKER_IPS]
+    protocol: TCP
+    source: {}
+  - action: Deny
+    destination:
+      nets: [WORKER_IPS]
+    protocol: ICMP
+    source: {}
+  order: 1400
+  preDNAT: true
+  selector: ibm.role=='worker_public'
+  types:
+  - Ingress
