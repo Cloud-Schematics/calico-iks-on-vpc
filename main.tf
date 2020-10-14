@@ -42,12 +42,28 @@ data ibm_container_cluster_config cluster {
 
 
 ##############################################################################
+# Example resource to force calico to wait until done. This can be done with
+# any resource block
+##############################################################################
+
+resource null_resource example_await {
+  provisioner local-exec {
+    command = <<BASH
+sleep 60
+    BASH
+  }
+}
+
+##############################################################################
+
+
+##############################################################################
 # Calico Setup
 ##############################################################################
 
 module calico {
     source             = "./calico"
-    await_complete     = "done"
+    await_complete     = null_resource.example_await.id
     cluster_name       = var.cluster_name
     workers            = data.ibm_container_vpc_cluster.cluster.workers
     worker_count       = length(data.ibm_container_vpc_cluster.cluster.workers)
